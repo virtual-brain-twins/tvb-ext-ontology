@@ -11,6 +11,7 @@ for the frontend extension.
 ## Requirements
 
 - JupyterLab >= 4.0.0
+- Python >= 3.10
 
 ## Install
 

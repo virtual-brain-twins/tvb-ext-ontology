@@ -56,7 +56,7 @@ export async function fetchNodeByLabel(
     const response = await requestAPI<any>(`node?label=${label}`);
     return response;
   } catch (error) {
-    console.error(`Error fetching node data: ${error}`);
+    console.error(`Error fetching node data for label ${label}: ${error}`);
     return { nodes: [], links: [] };
   }
 }

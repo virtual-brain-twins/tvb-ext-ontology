@@ -31,20 +31,21 @@ export const GraphViewComponent: React.FC<IGraphViewProps> = ({
   // const [hoveredNode, setHoveredNode] = useState<INodeType | null>(null);
 
   const NODE_RADIUS = 4;
-  const fgRef =
-    useRef<ForceGraphMethods<NodeObject<INodeType>, LinkObject<ILinkType>>>();
+  const fgRef = useRef<
+    ForceGraphMethods<NodeObject<INodeType>, LinkObject<ILinkType>> | undefined
+  >(undefined);
   const [isInitialRender, setIsInitialRender] = useState<boolean>(true);
 
   useEffect(() => {
     const fetchAndSetData = async (label?: string) => {
-      try {
-        // Fetch data
-        const result = await fetchNodeByLabel(label || '');
-        setData(result);
-      } catch (error) {
-        console.error('Failed to fetch data:', error);
-        setData({ nodes: [], links: [] });
-      }
+        try {
+          // Fetch data
+          const result = await fetchNodeByLabel(label || '');
+          setData(result);
+        } catch (error) {
+          console.error('Failed to fetch data:', error);
+          setData({ nodes: [], links: [] });
+        }
     };
 
     fetchAndSetData(searchLabel);
@@ -174,10 +175,9 @@ export const GraphViewComponent: React.FC<IGraphViewProps> = ({
             type="text"
             value={searchLabel}
             onChange={e => setSearchLabel(e.target.value)}
-            onKeyPress={handleKeyPress}
+            onKeyDown={handleKeyPress}
             placeholder="Enter node label"
           />
-          <button onClick={handleSearch}>Search</button>
         </div>
         <div ref={graphContainerRef} className="graph-container">
           {data ? (
@@ -239,11 +239,6 @@ export const GraphViewComponent: React.FC<IGraphViewProps> = ({
           )}
         </div>
       </div>
-      {/* {hoveredNode && (
-        <div className="nodehover">
-          <strong>{hoveredNode.label}</strong>: {hoveredNode.description}
-        </div>
-      )} */}
     </>
   );
 };
