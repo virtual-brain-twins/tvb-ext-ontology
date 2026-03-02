@@ -232,5 +232,5 @@
   border: 1px solid blue;
   display: block;
   width: 200px;
-  word-wrap: break-word;
+  overflow-wrap: break-word;
 }
