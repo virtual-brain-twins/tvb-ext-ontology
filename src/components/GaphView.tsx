@@ -38,14 +38,14 @@ export const GraphViewComponent: React.FC<IGraphViewProps> = ({
 
   useEffect(() => {
     const fetchAndSetData = async (label?: string) => {
-        try {
-          // Fetch data
-          const result = await fetchNodeByLabel(label || '');
-          setData(result);
-        } catch (error) {
-          console.error('Failed to fetch data:', error);
-          setData({ nodes: [], links: [] });
-        }
+      try {
+        // Fetch data
+        const result = await fetchNodeByLabel(label || '');
+        setData(result);
+      } catch (error) {
+        console.error('Failed to fetch data:', error);
+        setData({ nodes: [], links: [] });
+      }
     };
 
     fetchAndSetData(searchLabel);
