@@ -90,8 +90,6 @@ export const GraphViewComponent: React.FC<IGraphViewProps> = ({
 
     const visibleNodes: INodeType[] = [];
     const visibleLinks: ILinkType[] = [];
-    let newNodes: INodeType[] = [];
-    let newLinks: ILinkType[] = [];
     const visitedIds: number[] = [];
 
     for (const n of data.nodes) {
@@ -114,8 +112,8 @@ export const GraphViewComponent: React.FC<IGraphViewProps> = ({
     };
 
     processNode(node);
-    newNodes = [...data.nodes, ...visibleNodes];
-    newLinks = [...data.links, ...visibleLinks];
+    const newNodes = [...data.nodes, ...visibleNodes];
+    const newLinks = [...data.links, ...visibleLinks];
     setData({ nodes: newNodes, links: newLinks });
 
     const res = await fetchNodeConnections('');

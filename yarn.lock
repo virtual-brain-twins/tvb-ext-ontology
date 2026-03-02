@@ -1786,6 +1786,18 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@eslint/js@npm:^10.0.0":
+  version: 10.0.1
+  resolution: "@eslint/js@npm:10.0.1"
+  peerDependencies:
+    eslint: ^10.0.0
+  peerDependenciesMeta:
+    eslint:
+      optional: true
+  checksum: 5e60b80ec48d303c9273d5c2803ae3fe12fd5335d57d889d4f9df9249910a97e2921118403765bff26a00b734182437f91a0f6f552654cf12ad73bb49995e22e
+  languageName: node
+  linkType: hard
+
 "@eslint/object-schema@npm:^3.0.2":
   version: 3.0.2
   resolution: "@eslint/object-schema@npm:3.0.2"
@@ -4837,7 +4849,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@typescript-eslint/eslint-plugin@npm:^8.56.1":
+"@typescript-eslint/eslint-plugin@npm:8.56.1, @typescript-eslint/eslint-plugin@npm:^8.56.1":
   version: 8.56.1
   resolution: "@typescript-eslint/eslint-plugin@npm:8.56.1"
   dependencies:
@@ -4857,7 +4869,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@typescript-eslint/parser@npm:^8.56.1":
+"@typescript-eslint/parser@npm:8.56.1, @typescript-eslint/parser@npm:^8.56.1":
   version: 8.56.1
   resolution: "@typescript-eslint/parser@npm:8.56.1"
   dependencies:
@@ -6284,8 +6296,8 @@ __metadata:
   linkType: hard
 
 "cosmiconfig@npm:^9.0.0":
-  version: 9.0.0
-  resolution: "cosmiconfig@npm:9.0.0"
+  version: 9.0.1
+  resolution: "cosmiconfig@npm:9.0.1"
   dependencies:
     env-paths: ^2.2.1
     import-fresh: ^3.3.0
@@ -6296,7 +6308,7 @@ __metadata:
   peerDependenciesMeta:
     typescript:
       optional: true
-  checksum: a30c424b53d442ea0bdd24cb1b3d0d8687c8dda4a17ab6afcdc439f8964438801619cdb66e8e79f63b9caa3e6586b60d8bab9ce203e72df6c5e80179b971fe8f
+  checksum: 7cc04fcbb04f72db1074ee754952a6a0a228d07932d076b0e4fc82c75bc14aa0b0cb7989c161710e038ea42539d919d643a2b268c580ac7da7b3dedd52d8bb7b
   languageName: node
   linkType: hard
 
@@ -13054,7 +13066,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ts-jest@npm:^29.1.0":
+"ts-jest@npm:^29.1.0, ts-jest@npm:^29.4.6":
   version: 29.4.6
   resolution: "ts-jest@npm:29.4.6"
   dependencies:
@@ -13112,6 +13124,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "tvb-ext-ontology@workspace:."
   dependencies:
+    "@eslint/js": ^10.0.0
     "@jupyterlab/application": ^4.5.5
     "@jupyterlab/apputils": ^4.6.5
     "@jupyterlab/builder": ^4.5.5
@@ -13149,7 +13162,9 @@ __metadata:
     stylelint-config-recommended: ^18.0.0
     stylelint-config-standard: ^40.0.0
     stylelint-prettier: ^5.0.3
+    ts-jest: ^29.4.6
     typescript: ~5.5.0
+    typescript-eslint: ^8.56.1
     webpack: ^5.105.2
     yjs: ^13.6.29
   languageName: unknown
@@ -13235,6 +13250,21 @@ __metadata:
     possible-typed-array-names: ^1.0.0
     reflect.getprototypeof: ^1.0.6
   checksum: deb1a4ffdb27cd930b02c7030cb3e8e0993084c643208e52696e18ea6dd3953dfc37b939df06ff78170423d353dc8b10d5bae5796f3711c1b3abe52872b3774c
+  languageName: node
+  linkType: hard
+
+"typescript-eslint@npm:^8.56.1":
+  version: 8.56.1
+  resolution: "typescript-eslint@npm:8.56.1"
+  dependencies:
+    "@typescript-eslint/eslint-plugin": 8.56.1
+    "@typescript-eslint/parser": 8.56.1
+    "@typescript-eslint/typescript-estree": 8.56.1
+    "@typescript-eslint/utils": 8.56.1
+  peerDependencies:
+    eslint: ^8.57.0 || ^9.0.0 || ^10.0.0
+    typescript: ">=4.8.4 <6.0.0"
+  checksum: aa153347f6a2b0be1d2b522927d8d71c8159d6cf7ddeb6f3f9ca94efd70e3872ee7406a28c92b90df920b219af665411237fe1c92614049c214f3e9769df119b
   languageName: node
   linkType: hard
 
