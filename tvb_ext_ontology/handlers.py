@@ -1,6 +1,5 @@
 import json
 import os
-import time
 
 import tornado
 from jupyter_server.base.handlers import APIHandler
