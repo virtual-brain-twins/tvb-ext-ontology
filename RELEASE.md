@@ -56,18 +56,18 @@ npm login
 npm publish --access public
 ```
 
-## Automated releases with the Jupyter Releaser
+## Automated releases from GitHub
 
-The extension repository should already be compatible with the Jupyter Releaser. But
-the GitHub repository and the package managers need to be properly set up. Please
-follow the instructions of the Jupyter Releaser [checklist](https://jupyter-releaser.readthedocs.io/en/latest/how_to_guides/convert_repo_from_repo.html).
+### Release Process
 
-Here is a summary of the steps to cut a new release:
+This repository uses automated GitHub Actions to handle the distribution of new versions. When you create a release in the GitHub UI, the following process occurs:
 
-- Go to the Actions panel
-- Run the "Step 1: Prep Release" workflow
-- Check the draft changelog
-- Run the "Step 2: Publish Release" workflow
+1. Triggering the Release
+   - Create a Tag: To start a release, draft a new release in the GitHub UI and create a tag (e.g., v0.1.0).
+   - Automated Activation: \* The PyPI workflow triggers as soon as the release is created.
+     - The npm workflow triggers once the release is published.
+
+2. Versioning Logic
 
 > [!NOTE]
 > Check out the [workflow documentation](https://jupyter-releaser.readthedocs.io/en/latest/get_started/making_release_from_repo.html)
