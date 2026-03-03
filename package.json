@@ -7,9 +7,9 @@
         "jupyterlab",
         "jupyterlab-extension"
     ],
-    "homepage": "https://github.com/the-virtual-brain/tvb-ext-ontology",
+    "homepage": "https://github.com/virtual-brain-twins/tvb-ext-ontology",
     "bugs": {
-        "url": "https://github.com/the-virtual-brain/tvb-ext-ontology/issues"
+        "url": "https://github.com/virtual-brain-twins/tvb-ext-ontology/issues"
     },
     "license": "BSD-3-Clause",
     "author": {
@@ -26,7 +26,7 @@
     "style": "style/index.css",
     "repository": {
         "type": "git",
-        "url": "https://github.com/the-virtual-brain/tvb-ext-ontology.git"
+        "url": "https://github.com/virtual-brain-twins/tvb-ext-ontology"
     },
     "scripts": {
         "build": "jlpm build:lib && jlpm build:labextension:dev",
