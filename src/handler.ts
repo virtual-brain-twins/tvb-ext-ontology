@@ -38,7 +38,7 @@ export async function requestAPI<T>(
     try {
       data = JSON.parse(data);
     } catch (error) {
-      console.log('Not a JSON response body.', response);
+      console.log('Not a JSON response body.', response, error);
     }
   }
 
@@ -56,7 +56,7 @@ export async function fetchNodeByLabel(
     const response = await requestAPI<any>(`node?label=${label}`);
     return response;
   } catch (error) {
-    console.error(`Error fetching node data: ${error}`);
+    console.error(`Error fetching node data for label ${label}: ${error}`);
     return { nodes: [], links: [] };
   }
 }

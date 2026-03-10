@@ -31,8 +31,9 @@ export const GraphViewComponent: React.FC<IGraphViewProps> = ({
   // const [hoveredNode, setHoveredNode] = useState<INodeType | null>(null);
 
   const NODE_RADIUS = 4;
-  const fgRef =
-    useRef<ForceGraphMethods<NodeObject<INodeType>, LinkObject<ILinkType>>>();
+  const fgRef = useRef<
+    ForceGraphMethods<NodeObject<INodeType>, LinkObject<ILinkType>> | undefined
+  >(undefined);
   const [isInitialRender, setIsInitialRender] = useState<boolean>(true);
 
   useEffect(() => {
@@ -89,8 +90,6 @@ export const GraphViewComponent: React.FC<IGraphViewProps> = ({
 
     const visibleNodes: INodeType[] = [];
     const visibleLinks: ILinkType[] = [];
-    let newNodes: INodeType[] = [];
-    let newLinks: ILinkType[] = [];
     const visitedIds: number[] = [];
 
     for (const n of data.nodes) {
@@ -113,8 +112,8 @@ export const GraphViewComponent: React.FC<IGraphViewProps> = ({
     };
 
     processNode(node);
-    newNodes = [...data.nodes, ...visibleNodes];
-    newLinks = [...data.links, ...visibleLinks];
+    const newNodes = [...data.nodes, ...visibleNodes];
+    const newLinks = [...data.links, ...visibleLinks];
     setData({ nodes: newNodes, links: newLinks });
 
     const res = await fetchNodeConnections('');
@@ -174,10 +173,9 @@ export const GraphViewComponent: React.FC<IGraphViewProps> = ({
             type="text"
             value={searchLabel}
             onChange={e => setSearchLabel(e.target.value)}
-            onKeyPress={handleKeyPress}
+            onKeyDown={handleKeyPress}
             placeholder="Enter node label"
           />
-          <button onClick={handleSearch}>Search</button>
         </div>
         <div ref={graphContainerRef} className="graph-container">
           {data ? (
@@ -239,11 +237,6 @@ export const GraphViewComponent: React.FC<IGraphViewProps> = ({
           )}
         </div>
       </div>
-      {/* {hoveredNode && (
-        <div className="nodehover">
-          <strong>{hoveredNode.label}</strong>: {hoveredNode.description}
-        </div>
-      )} */}
     </>
   );
 };

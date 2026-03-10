@@ -1,0 +1,43 @@
+name: 'Publish Release on NPM'
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    environment: release
+    permissions:
+      id-token: write
+      contents: read
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: jupyterlab/maintainer-tools/.github/actions/base-setup@v1
+
+      - name: Set version from tag
+        run: |
+          VERSION=${{ github.event.release.tag_name }}
+          VERSION=${VERSION#v}
+          pip install hatch hatch-jupyter-builder hatch-nodejs-version 'jupyterlab<5,>=4.0.0' build --break-system-packages
+          hatch version $VERSION
+          npm pkg set version=$VERSION
+
+      - name: Build Python package
+        run: python -m build --no-isolation
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: Install JS dependencies
+        run: jlpm install
+
+      - name: Publish to npm
+        run: npm publish --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
