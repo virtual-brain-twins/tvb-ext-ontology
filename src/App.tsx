@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import '../style/layout.css';
 import { GraphViewComponent } from './components/GaphView';
-import InfoBoxComponent from './components/InfoBox';
 import WorkspaceComponent from './components/Workspace';
 import { ISelectedNodeType } from './components/interfaces/InfoBoxInterfaces';
 import { IWorkspaceState } from './components/interfaces/WorkspaceInterfaces';
 import TreeViewComponent from './components/TreeView';
+import InfoBoxComponent from "./components/InfoBox";
 
 const App: React.FC = () => {
   const [selectedNode, setSelectedNode] = useState<ISelectedNodeType | null>(
@@ -33,7 +33,7 @@ const App: React.FC = () => {
           return { ...prevWorkspace, noise: node };
         case 'Coupling':
           return { ...prevWorkspace, coupling: node };
-        case 'Integrator':
+        case 'IntegrationMethod':
           return { ...prevWorkspace, integrationMethod: node };
         default:
           return prevWorkspace; // No changes if the type doesn't match
