@@ -242,40 +242,38 @@ def custom_get(data, key, default):
 
 def construct_metadata(nodes_data):
     """
-    Construct the metadata dictionary using the data coming from the configured workspace
+    Construct the metadata dictionary using the data coming from the configured workspace.
+
     Parameters
     ----------
     nodes_data:
         dict containing the data configured in the workspace
+
     Returns
     -------
     metadata:
-        dict contaning the metadata that will be used in exporting the code or running a simulation
+        dict containing the metadata that will be used in exporting the code or running a simulation.
+        Uses schema-aligned keys: ``dynamics`` (not ``model``), ``network`` (not ``connectivity``).
     """
+    noise_val = custom_get(nodes_data, "noise", None)
     metadata = {
-        "model": {
-            "name": custom_get(nodes_data, "model", "Generic2dOscillator"),
-            "parameters": {},
-        },
-        "connectivity": {
+        "dynamics": custom_get(nodes_data, "model", "Generic2dOscillator"),
+        "coupling": custom_get(nodes_data, "coupling", "Linear"),
+        "network": {
             "parcellation": {
                 "atlas": {
                     "name": custom_get(nodes_data, "parcellation", "DesikanKilliany"),
                 }
             },
-            "tractogram": custom_get(nodes_data, "tractogram", "dTOR"),
-        },
-        "coupling": {
-            "name": custom_get(nodes_data, "coupling", "Linear"),
+            "tractogram": {
+                "name": custom_get(nodes_data, "tractogram", "dTOR"),
+            },
         },
         "integration": {
             "method": custom_get(nodes_data, "integrationMethod", "Heun"),
             "noise": (
-                {
-                    "additive": "additive"
-                    in custom_get(nodes_data, "noise", None).lower()
-                }
-                if custom_get(nodes_data, "noise", None)
+                {"additive": "additive" in noise_val.lower()}
+                if noise_val
                 else None
             ),
         },
