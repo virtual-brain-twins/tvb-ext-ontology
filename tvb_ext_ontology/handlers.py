@@ -195,12 +195,12 @@ class RunSimulationHandler(APIHandler):
 
             # run simulation
             LOGGER.info("Starting to run the experiment")
-            onto_api.experiment.run(simulation_length=10)
+            result = onto_api.experiment.run(simulation_length=10)
             LOGGER.info("Finished the experiment")
 
             # save TS to disk
             LOGGER.info("Saving Time Series...")
-            onto_api.experiment.save_timeseries(directory)
+            result.to_bids(directory)
             LOGGER.info(f"Saved Time Series at {directory}")
 
             # Send a JSON response indicating success
