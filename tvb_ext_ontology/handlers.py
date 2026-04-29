@@ -10,6 +10,9 @@ from tvb_ext_ontology.exceptions import InvalidDirectoryException
 from tvb_ext_ontology.logger.builder import get_logger
 
 LOGGER = get_logger(__name__)
+LOGGER.info(f"+++++tvb_ext_ontology handlers loaded")
+LOGGER.info(f"------tvb_ext_ontology handlers loaded")
+
 
 onto_api = OntologyAPI()
 
@@ -146,6 +149,7 @@ class ExportWorkspaceHandler(APIHandler):
 
             elif export_type == "jl":
                 p = list(onto_api.experiment.model.metadata.parameters.values())[0].name
+                # todo: missing method from tvbo
                 onto_api.experiment.save_model_bifurcation_analysis_code(
                     directory, ICS=p, p_min=-10, p_max=10
                 )  # TODO: remove hardcoding and add option to type in parameters in frontend
@@ -155,6 +159,7 @@ class ExportWorkspaceHandler(APIHandler):
                 LOGGER.info("Saved model specification")
 
             elif export_type == "yaml":
+                # todo: missing method from tvbo
                 onto_api.experiment.save_metadata(directory)
                 LOGGER.info("Saved metadata")
 
@@ -195,12 +200,9 @@ class RunSimulationHandler(APIHandler):
 
             # run simulation
             LOGGER.info("Starting to run the experiment")
-            onto_api.experiment.run(simulation_length=10)
+            onto_api.experiment.run(simulation_length=10, out=directory)
             LOGGER.info("Finished the experiment")
 
-            # save TS to disk
-            LOGGER.info("Saving Time Series...")
-            onto_api.experiment.save_timeseries(directory)
             LOGGER.info(f"Saved Time Series at {directory}")
 
             # Send a JSON response indicating success
@@ -344,3 +346,4 @@ def setup_handlers(web_app):
     ]
 
     web_app.add_handlers(host_pattern, handlers)
+
