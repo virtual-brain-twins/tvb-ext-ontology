@@ -4,6 +4,7 @@ import os
 import tornado
 from jupyter_server.base.handlers import APIHandler
 from jupyter_server.utils import url_path_join
+from tvbo.api import ontology_api
 from tvbo.api.ontology_api import OntologyAPI
 
 from tvb_ext_ontology.exceptions import InvalidDirectoryException
@@ -12,7 +13,6 @@ from tvb_ext_ontology.logger.builder import get_logger
 LOGGER = get_logger(__name__)
 LOGGER.info(f"+++++tvb_ext_ontology handlers loaded")
 LOGGER.info(f"------tvb_ext_ontology handlers loaded")
-
 
 onto_api = OntologyAPI()
 
@@ -128,6 +128,19 @@ class NodeParentConnectionsHandler(APIHandler):
         self.finish(json.dumps(node_data))
 
 
+class ExportFormatsHandler(APIHandler):
+    @tornado.web.authenticated
+    def get(self):
+        try:
+            export_formats = onto_api.get_export_formats()
+            self.set_header("Content-Type", "application/json")
+            self.finish(json.dumps(export_formats))
+        except Exception as e:
+            self.set_status(500)
+            self.set_header("Content-Type", "application/json")
+            self.finish(json.dumps({"error": str(e)}))
+
+
 class ExportWorkspaceHandler(APIHandler):
     @tornado.web.authenticated
     def post(self):
@@ -142,26 +155,32 @@ class ExportWorkspaceHandler(APIHandler):
             onto_api.configure_simulation_experiment(metadata)
             LOGGER.info("Configured simulation experiment")
 
+            onto_api.export_experiment(
+                format=export_type,  # or any key/alias from get_export_formats() --> label from  dict
+                directory=directory, # files written here with BIDS-style auto names
+                metadata_only=True,  # False also writes a *_network.h5 sidecar
+            )
+
             # treat different export type options
-            if export_type == "py":
-                onto_api.experiment.save_code(directory)
-                LOGGER.info("Saved code")
-
-            elif export_type == "jl":
-                p = list(onto_api.experiment.model.metadata.parameters.values())[0].name
-                # todo: missing method from tvbo
-                onto_api.experiment.save_model_bifurcation_analysis_code(
-                    directory, ICS=p, p_min=-10, p_max=10
-                )  # TODO: remove hardcoding and add option to type in parameters in frontend
-
-            elif export_type == "xml":
-                onto_api.experiment.save_model_specification(directory)
-                LOGGER.info("Saved model specification")
-
-            elif export_type == "yaml":
-                # todo: missing method from tvbo
-                onto_api.experiment.save_metadata(directory)
-                LOGGER.info("Saved metadata")
+            # if export_type == "py":
+            #     onto_api.experiment.save_code(directory)
+            #     LOGGER.info("Saved code")
+            #
+            # elif export_type == "jl":
+            #     p = list(onto_api.experiment.model.metadata.parameters.values())[0].name
+            #     # todo: missing method from tvbo
+            #     onto_api.experiment.save_model_bifurcation_analysis_code(
+            #         directory, ICS=p, p_min=-10, p_max=10
+            #     )  # TODO: remove hardcoding and add option to type in parameters in frontend
+            #
+            # elif export_type == "xml":
+            #     onto_api.experiment.save_model_specification(directory)
+            #     LOGGER.info("Saved model specification")
+            #
+            # elif export_type == "yaml":
+            #     # todo: missing method from tvbo
+            #     onto_api.experiment.save_metadata(directory)
+            #     LOGGER.info("Saved metadata")
 
             # send success json
             self.set_header("Content-Type", "application/json")
@@ -197,13 +216,15 @@ class RunSimulationHandler(APIHandler):
 
             onto_api.configure_simulation_experiment(metadata)
             LOGGER.info("Configured simulation experiment")
-
+            print(onto_api.get_export_formats())
             # run simulation
             LOGGER.info("Starting to run the experiment")
-            onto_api.experiment.run(simulation_length=10, out=directory)
+            res = onto_api.experiment.run(simulation_length=10)
             LOGGER.info("Finished the experiment")
-
+            res.export(directory)
             LOGGER.info(f"Saved Time Series at {directory}")
+            res.plot()
+            LOGGER.info("Plotted the experiment")
 
             # Send a JSON response indicating success
             self.set_header("Content-Type", "application/json")
@@ -335,6 +356,10 @@ def setup_handlers(web_app):
         base_url, "tvb-ext-ontology", "run-simulation"
     )
 
+    export_formats_pattern = url_path_join(
+        base_url, "tvb-ext-ontology", "export-formats"
+    )
+
     handlers = [
         (route_pattern, RouteHandler),
         (node_pattern, NodeHandler),
@@ -343,7 +368,7 @@ def setup_handlers(web_app):
         (node_parent_connections_pattern, NodeParentConnectionsHandler),
         (export_workspace_pattern, ExportWorkspaceHandler),
         (run_simulation_pattern, RunSimulationHandler),
+        (export_formats_pattern, ExportFormatsHandler),
     ]
 
     web_app.add_handlers(host_pattern, handlers)
-
