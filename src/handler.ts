@@ -108,6 +108,20 @@ export async function fetchNodeParents(
   }
 }
 
+export async function getExportFormats(): Promise<
+  Array<{ label: string; extension: string; format: string }>
+> {
+  try {
+    const response = await requestAPI<
+      Array<{ label: string; extension: string; format: string }>
+    >('export-formats');
+    return response;
+  } catch (error) {
+    console.error(`Error fetching export formats: ${error}`);
+    return [];
+  }
+}
+
 export async function exportWorkspace(
   exportType: string,
   nodeData: { [key: string]: string },
