@@ -1,13 +1,20 @@
 import React, { useEffect, useState } from 'react';
 import { IWorkspaceProps } from './interfaces/WorkspaceInterfaces';
-import { exportWorkspace, runSimulation } from '../handler';
+import { exportWorkspace, getExportFormats, runSimulation } from '../handler';
+
+interface IExportFormat {
+  label: string;
+  extension: string;
+  format: string;
+}
 
 const WorkspaceComponent: React.FC<IWorkspaceProps> = ({
   workspace,
   updateConnectivityOptions,
   resetWorkspace
 }) => {
-  const [exportType, setExportType] = useState('py');
+  const [exportType, setExportType] = useState('');
+  const [exportFormats, setExportFormats] = useState<IExportFormat[]>([]);
   const [message, setMessage] = useState<string | null>(null);
   const [directory, setDirectory] = useState('');
 
@@ -85,6 +92,27 @@ const WorkspaceComponent: React.FC<IWorkspaceProps> = ({
       return () => clearTimeout(timer);
     }
   }, [message]);
+
+  useEffect(() => {
+    const fetchExportFormats = async () => {
+      try {
+        const formats: IExportFormat[] = await getExportFormats();
+        setExportFormats(formats);
+        if (formats.length > 0) {
+          setExportType(formats[0].format);
+        }
+      } catch (error) {
+        if (error instanceof Error) {
+          setMessage(`Error fetching export formats: ${error.message}`);
+        } else {
+          setMessage(
+            'An unknown error occurred while fetching export formats.'
+          );
+        }
+      }
+    };
+    fetchExportFormats();
+  }, []);
 
   return (
     <div className="workspace">
@@ -170,10 +198,11 @@ const WorkspaceComponent: React.FC<IWorkspaceProps> = ({
               value={exportType}
               onChange={e => setExportType(e.target.value)}
             >
-              <option value="py">Simulation code (.py)</option>
-              <option value="jl">Bifurcation analysis (.jl)</option>
-              <option value="xml">Model specification (.xml)</option>
-              <option value="yaml">Metadata (.yaml)</option>
+              {exportFormats.map((format, index) => (
+                <option key={index} value={format.format}>
+                  {format.label} ({format.extension})
+                </option>
+              ))}
             </select>
           </div>
         </div>

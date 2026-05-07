@@ -25,7 +25,7 @@ const InfoBoxComponent: React.FC<IInfoBoxProps> = ({
     'Neural Mass Model',
     'Noise',
     'Coupling',
-    'Integrator',
+    'IntegrationMethod',
     'JournalArticle'
   ];
 
