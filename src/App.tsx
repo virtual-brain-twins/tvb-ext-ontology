@@ -5,7 +5,7 @@ import WorkspaceComponent from './components/Workspace';
 import { ISelectedNodeType } from './components/interfaces/InfoBoxInterfaces';
 import { IWorkspaceState } from './components/interfaces/WorkspaceInterfaces';
 import TreeViewComponent from './components/TreeView';
-import InfoBoxComponent from "./components/InfoBox";
+import InfoBoxComponent from './components/InfoBox';
 
 const App: React.FC = () => {
   const [selectedNode, setSelectedNode] = useState<ISelectedNodeType | null>(
