@@ -125,46 +125,48 @@ class NodeParentConnectionsHandler(APIHandler):
         self.finish(json.dumps(node_data))
 
 
+class ExportFormatsHandler(APIHandler):
+    """Return supported SimulationExperiment export formats for UI dropdowns."""
+
+    @tornado.web.authenticated
+    def get(self):
+        formats = onto_api.get_export_formats()
+        self.set_header("Content-Type", "application/json")
+        self.finish(json.dumps(formats))
+
+
 class ExportWorkspaceHandler(APIHandler):
     @tornado.web.authenticated
     def post(self):
         try:
-            nodes_data, export_type, directory = parse_json_body(self.request.body)
+            data = json.loads(self.request.body.decode("utf-8"))
+            nodes_data = data.get("data", {})
+            export_format = data.get("exportFormat", data.get("exportType", "yaml"))
+            metadata_only = data.get("metadataOnly", True)
+            directory = data.get("directory", "")
 
             directory = validate_directory_path(directory)
-
             metadata = construct_metadata(nodes_data)
             LOGGER.info(f"Created the metadata: {metadata}")
 
             onto_api.configure_simulation_experiment(metadata)
             LOGGER.info("Configured simulation experiment")
 
-            # treat different export type options
-            if export_type == "py":
-                onto_api.experiment.save_code(directory)
-                LOGGER.info("Saved code")
+            result = onto_api.export_experiment(
+                format=export_format,
+                directory=directory,
+                metadata_only=metadata_only,
+            )
+            LOGGER.info(f"Exported experiment: {result}")
 
-            elif export_type == "jl":
-                p = list(onto_api.experiment.model.metadata.parameters.values())[0].name
-                onto_api.experiment.save_model_bifurcation_analysis_code(
-                    directory, ICS=p, p_min=-10, p_max=10
-                )  # TODO: remove hardcoding and add option to type in parameters in frontend
-
-            elif export_type == "xml":
-                onto_api.experiment.save_model_specification(directory)
-                LOGGER.info("Saved model specification")
-
-            elif export_type == "yaml":
-                onto_api.experiment.save_metadata(directory)
-                LOGGER.info("Saved metadata")
-
-            # send success json
             self.set_header("Content-Type", "application/json")
             self.finish(
                 json.dumps(
                     {
                         "status": "success",
-                        "message": f"File saved in folder {os.path.abspath(directory)}",
+                        "message": f"File(s) saved in folder {os.path.abspath(directory)}",
+                        "format": result["format"],
+                        "files": result["files"],
                     }
                 )
             )
@@ -325,10 +327,12 @@ def setup_handlers(web_app):
     node_parent_connections_pattern = url_path_join(
         base_url, "tvb-ext-ontology", "node-parent-connections"
     )
+    export_formats_pattern = url_path_join(
+        base_url, "tvb-ext-ontology", "export-formats"
+    )
     export_workspace_pattern = url_path_join(
         base_url, "tvb-ext-ontology", "export-workspace"
     )
-
     run_simulation_pattern = url_path_join(
         base_url, "tvb-ext-ontology", "run-simulation"
     )
@@ -339,6 +343,7 @@ def setup_handlers(web_app):
         (node_connections_pattern, NodeConnectionsHandler),
         (node_children_connections_pattern, NodeChildrenConnectionsHandler),
         (node_parent_connections_pattern, NodeParentConnectionsHandler),
+        (export_formats_pattern, ExportFormatsHandler),
         (export_workspace_pattern, ExportWorkspaceHandler),
         (run_simulation_pattern, RunSimulationHandler),
     ]
