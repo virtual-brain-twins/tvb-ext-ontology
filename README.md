@@ -2,7 +2,11 @@
 
 [![Github Actions Status](https://github.com/the-virtual-brain/tvb-ext-ontology/workflows/Build/badge.svg)](https://github.com/the-virtual-brain/tvb-ext-ontology/actions/workflows/build.yml)
 
-A JupyterLab extension.
+This is a JupyterLab extension for working with TVB-related simulation workflows through a visual and interactive interface.
+
+The extension uses tvbo to access the knowledge representation system, ontology, and data model for the neuroinformatics platform The Virtual Brain (TVB). Through this ontology-based layer, TVB concepts, models, parameters, and simulation metadata can be represented and used in a more structured way.
+
+The extension also integrates with tvboptim, a JAX-based framework for brain network simulation and gradient-based optimization. This enables simulation and optimization workflows to be connected with the ontology/data-model layer exposed by tvbo.
 
 This extension is composed of a Python package named `tvb_ext_ontology`
 for the server extension and a NPM package named `tvb-ext-ontology`
